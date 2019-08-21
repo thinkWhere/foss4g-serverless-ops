@@ -1,0 +1,8 @@
+# Pycharm
+.idea/
+
+# Terraform
+.terraform/
+
+# Ensure mapped env_vars are never committed
+env_vars.ini

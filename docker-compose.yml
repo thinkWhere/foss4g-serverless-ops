@@ -1,0 +1,16 @@
+# Docker compose file that sets up environment:
+# Maps local ops directory to ops within the container, allowing us to make local changes and run immediately
+# Maps local docker.aws directory this is where necessary credentials can live outside of git
+# Creates image called foss4g_ops
+version: "3"
+
+services:
+  foss4g-ops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: foss4g_ops
+    volumes:
+      - ./ops:/ops
+      - ../docker.aws:/root/.aws
+      - ../docker.aws/env_vars.ini:/ops/utils/env_vars.ini
