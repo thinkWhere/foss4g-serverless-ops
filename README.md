@@ -20,3 +20,4 @@ cd ops
     * Setup an S3 bucket to hold Terraform State
 * Docker-compose and setenv.sh
 * Explain Terraform modules/registry
+* Create VPC
