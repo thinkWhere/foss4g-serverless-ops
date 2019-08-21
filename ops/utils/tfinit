@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Convenience wrapper for terraform init, so we can pass in globals
+
+terraform init \
+    -backend-config="region=$TF_VAR_region" \
+    -backend-config="profile=$TF_VAR_profile" \
+    -backend-config="bucket=$TF_VAR_bucket"
+
+printf "#####################################\n"
+printf "thinkWhere Ops\n"
+printf "Intialised Terraform with following vars...\n\n"
+printf "AWS region:       $TF_VAR_region \n"
+printf "Local profile:    $TF_VAR_profile \n"
+printf "Config S3 bucket: $TF_VAR_bucket \n\n"
+printf "#####################################\n"
