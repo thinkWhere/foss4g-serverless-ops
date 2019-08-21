@@ -30,6 +30,11 @@ printf "Terraform Local profile:    $TF_VAR_profile \n"
 export TF_VAR_bucket=$BUCKET
 printf "Terraform Config S3 bucket: $TF_VAR_bucket \n"
 
+# Database admin passwords
+DB_APPSSTAGING_PASS=`utils/parse_config.py $PROFILE db_appsstaging_pass`
+export TF_VAR_db_appsstaging_pass=$DB_APPSSTAGING_PASS
+printf "Terraform DB AppsStaging Pass   `echo $TF_VAR_db_appsstaging_pass | cut -c1-8`... \n\n"
+
 printf "#########################################################################\n"
 
 # push environment onto command line - so easy to see what we're using
