@@ -1,3 +1,13 @@
+#########
+# ECR
+#########
+
+resource "aws_ecr_repository" "geoserver" {
+  # Create an Elastic Container Repo for the flask-bootstrap project
+  name = "geoserver"
+}
+
+
 ##########
 # ECS
 ##########
@@ -148,3 +158,4 @@ resource "aws_iam_role_policy_attachment" "attach-policy-to-task-role" {
   role       = aws_iam_role.ecs_task_role.name
   policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
+

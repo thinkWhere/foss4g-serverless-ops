@@ -30,6 +30,10 @@ printf "Terraform Local profile:    $TF_VAR_profile \n"
 export TF_VAR_bucket=$BUCKET
 printf "Terraform Config S3 bucket: $TF_VAR_bucket \n"
 
+# Set up AWS Default profile so we can use awscli commands
+export AWS_DEFAULT_PROFILE=$PROFILE
+printf "\nawscli default provider:    $TF_VAR_profile \n"
+
 # Database admin passwords
 DB_APPSSTAGING_PASS=`utils/parse_config.py $PROFILE db_appsstaging_pass`
 export TF_VAR_db_appsstaging_pass=$DB_APPSSTAGING_PASS

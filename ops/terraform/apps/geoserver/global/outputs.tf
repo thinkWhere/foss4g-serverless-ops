@@ -17,3 +17,8 @@ output "ecs_task_role" {
   description = "ARN of the ECS task role"
   value       = aws_iam_role.ecs_task_role.arn
 }
+
+output "ecr_repo_url" {
+  description = "ARN of the ECR repo"
+  value       = aws_ecr_repository.geoserver.repository_url
+}
