@@ -38,7 +38,8 @@ module "ecs_sg" {
 ######################
 
 module "alb" {
-  # Blue Green ALB must be created with 2 target groups to allow traffic to be moved between the blue and green tasks
+  # Use ALB module from terraform registry
+  # https://registry.terraform.io/modules/terraform-aws-modules/alb/aws
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 4.0"
 

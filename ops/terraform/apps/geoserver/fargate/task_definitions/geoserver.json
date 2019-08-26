@@ -1,7 +1,7 @@
 [
   {
     "name": "geoserver-fargate",
-    "image": "${repo_url}:2.15",
+    "image": "${repo_url}:2.14",
     "portMappings": [
       {
         "containerPort": 8080,
