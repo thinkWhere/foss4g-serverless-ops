@@ -1,0 +1,21 @@
+[
+  {
+    "name": "geoserver-fargate",
+    "image": "${repo_url}:2.15",
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${cloud_watch_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "awslogs-geoserver-prefix"
+      }
+    },
+    "essential": true
+  }
+]
