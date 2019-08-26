@@ -81,11 +81,12 @@ module "alb" {
 #######################
 # Fargate
 ######################
-
+# TODO task definition could be moved to global
 resource "aws_ecs_task_definition" "geoserver_ecs_task_def" {
   # Task definition describes docker container, logging etc
   family                   = "geoserver-ecs"
 
+  # TODO could test to see if geoserver would run in a smaller container.
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
   memory                   = 4096
