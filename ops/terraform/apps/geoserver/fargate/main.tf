@@ -86,8 +86,8 @@ resource "aws_ecs_task_definition" "geoserver_ecs_task_def" {
   family                   = "geoserver-ecs"
 
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = 1024
+  memory                   = 4096
   network_mode             = "awsvpc"  # allocates task a network interface
 
   execution_role_arn       = data.terraform_remote_state.global_geoserver_ecs.outputs.ecs_service_role
