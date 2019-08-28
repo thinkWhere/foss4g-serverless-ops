@@ -23,3 +23,4 @@ data "terraform_remote_state" "global_vpc" {
     profile                 = var.profile
   }
 }
+

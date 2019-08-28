@@ -18,144 +18,40 @@ resource "aws_ecs_cluster" "geoserver_ecs_cluster" {
 }
 
 #######################
-# IAM ECS Service Role
-#######################
+# Cloud Watch
+######################
 
-resource "aws_iam_role" "ecs_service_role" {
-  # This is an IAM role which authorizes ECS to manage resources on your
-  # account on your behalf, such as updating your load balancer with the
-  # details of where your containers are, so that traffic can reach your
-  # containers.
-  name = "EcsServiceRole"
-  description = "Role which authorizes ECS to manage resources on our behalf"
-  assume_role_policy = <<EOF
-{
-  "Version":  "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-          "ecs.amazonaws.com",
-          "ecs-tasks.amazonaws.com"
-        ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
+resource "aws_cloudwatch_log_group" "geoserver_ecs_cloudwatch_logs" {
+  # Create log group for collection and analysis.  Logs that the container will generate will automatically
+  # be pushed to this group
+  name = "geoserver-cluster-logs"
+  retention_in_days = 7
 
-resource "aws_iam_policy" "ecs_service_policy" {
-  # Note if permission problems, refer to the AmazonECS_FullAccess policy and add missing tasks
-  name        = "ecs-service-policy"
-  description = "Permissions for ECS"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-          "ec2:AttachNetworkInterface",
-          "ec2:CreateNetworkInterface",
-          "ec2:CreateNetworkInterfacePermission",
-          "ec2:DeleteNetworkInterface",
-          "ec2:DeleteNetworkInterfacePermission",
-          "ec2:Describe*",
-          "ec2:DetachNetworkInterface",
-          "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-          "elasticloadbalancing:DeregisterTargets",
-          "elasticloadbalancing:Describe*",
-          "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-          "elasticloadbalancing:RegisterTargets",
-          "iam:PassRole",
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "logs:DescribeLogStreams",
-          "logs:CreateLogStream",
-          "logs:CreateLogGroup",
-          "logs:PutLogEvents"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "attach-ecs-policy" {
-  # Attach policy to role
-  role       = aws_iam_role.ecs_service_role.name
-  policy_arn = aws_iam_policy.ecs_service_policy.arn
+  tags = {
+    Application = "geoserver-ecs"
+  }
 }
 
 
-#######################
-# IAM ECS Task Role
-#######################
+###########################
+# Fargate Task Definition
+############################
 
-resource "aws_iam_role" "ecs_task_role" {
-  # This is a role which is used by the ECS tasks. Tasks in Amazon ECS define
-  # the containers that should be deployed togehter and the resources they
-  # require from a compute/memory perspective. So, the policies below will define
-  # the IAM permissions that our Flask-Bootstrap docker containers will have.
-  name = "ECSTaskRole"
-  description = "Role which authorizes ECS to manage resources on our behalf"
-  assume_role_policy = <<EOF
-{
-  "Version":  "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": [
-          "ecs-tasks.amazonaws.com"
-        ]
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
+resource "aws_ecs_task_definition" "geoserver_ecs_task_def" {
+  # Task definition describes docker container, logging etc
+  family                   = "geoserver-ecs"
 
-resource "aws_iam_policy" "ecs_task_policy" {
-  # Note if permission problems, refer to the AmazonECS_FullAccess policy and add missing tasks
-  name        = "ecs-task-policy"
-  description = "Permissions for ECS"
+  # TODO could test to see if geoserver would run in a smaller container.
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 1024
+  memory                   = 4096
+  network_mode             = "awsvpc"  # allocates task a network interface
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "logs:CreateLogStream",
-          "logs:CreateLogGroup",
-          "logs:PutLogEvents"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
+  execution_role_arn       = data.terraform_remote_state.iam_ecs.outputs.ecs_service_role
+  task_role_arn            = data.terraform_remote_state.iam_ecs.outputs.ecs_task_role
 
-resource "aws_iam_role_policy_attachment" "attach-policy-to-task-role" {
-  # Attach policy to role
-  role       = aws_iam_role.ecs_task_role.name
-  policy_arn = aws_iam_policy.ecs_task_policy.arn
+  container_definitions    = templatefile("task_definitions/geoserver.json",
+                                { region = var.region
+                                  repo_url = aws_ecr_repository.geoserver.repository_url
+                                  cloud_watch_group = aws_cloudwatch_log_group.geoserver_ecs_cloudwatch_logs.name})
 }
-
