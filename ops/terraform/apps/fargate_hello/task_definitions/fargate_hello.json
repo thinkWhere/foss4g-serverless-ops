@@ -1,0 +1,15 @@
+[
+  {
+    "name": "geoserver-fargate",
+    "image": "${repo_url}:latest",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${cloud_watch_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "awslogs-fargate-hello-prefix"
+      }
+    },
+    "essential": true
+  }
+]

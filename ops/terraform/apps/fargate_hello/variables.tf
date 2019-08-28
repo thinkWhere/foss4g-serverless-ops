@@ -9,3 +9,7 @@ variable "region" {
 variable "profile" {
   description = "AWS profile we're readings credentials from, read from TF_VAR_profile env var"
 }
+
+variable "bucket" {
+  description = "S3 bucket Terraform config is stored in, read from TF_VAR_bucket env var"
+}
