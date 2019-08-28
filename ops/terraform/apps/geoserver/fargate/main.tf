@@ -38,10 +38,10 @@ module "alb" {
   http_tcp_listeners_count = 1
   http_tcp_listeners  = [
     {
-      "port"               = 80
-      "protocol"           = "HTTP"
-      "type"               = "forward"
-      "target_group_index" = 0
+      port               = 80
+      protocol           = "HTTP"
+      type               = "forward"
+      target_group_index = 0
     },
   ]
 
@@ -51,14 +51,14 @@ module "alb" {
   # For simplicity we're always creating two target groups, but if we're doing a standard deploy only blue
   # will ever be used.  Obviously for blue/green both target groups will be utilised.
   target_groups = [{
-    "name"                  = "geoserver-ecs"
-    "backend_protocol"      = "HTTP"
-    "backend_port"          = 8080
-    "target_type"           = "ip"
-    "health_check_interval" = 30
-    "health_check_timeout"  = 5
-    "slow_start"            = 60
-    "health_check_path"     = "/geoserver/web/"
+    name                  = "geoserver-ecs"
+    backend_protocol      = "HTTP"
+    backend_port          = 8080
+    target_type           = "ip"
+    health_check_interval = 30
+    health_check_timeout  = 5
+    slow_start            = 60
+    health_check_path     = "/geoserver/web/"
   },
   ]
 }
