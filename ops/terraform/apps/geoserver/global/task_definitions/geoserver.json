@@ -13,7 +13,7 @@
       "options": {
         "awslogs-group": "${cloud_watch_group}",
         "awslogs-region": "${region}",
-        "awslogs-stream-prefix": "awslogs-geoserver-prefix"
+        "awslogs-stream-prefix": "geoserver-ecs"
       }
     },
     "essential": true
