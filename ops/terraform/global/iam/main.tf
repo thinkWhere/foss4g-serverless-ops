@@ -143,6 +143,7 @@ resource "aws_iam_role_policy_attachment" "attach-policy-to-task-role" {
 
 
 resource "aws_iam_role" "ecs_events" {
+  # Create a role to allow us to execute a cloud watch scheduler
   name = "ecs_events"
 
   assume_role_policy = <<DOC

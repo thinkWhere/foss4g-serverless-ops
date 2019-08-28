@@ -86,11 +86,12 @@ resource "aws_cloudwatch_event_rule" "fargate_every_five_mins" {
 }
 
 resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
+  # Wire scheduler to ecs container
+
   target_id = "run-scheduled-task-every-hour"
   arn       = aws_ecs_cluster.fargate_hello_cluster.arn
   rule      = aws_cloudwatch_event_rule.fargate_every_five_mins.name
   role_arn  = data.terraform_remote_state.iam_ecs.outputs.ecs_events_role
-
 
   ecs_target {
     launch_type         = "FARGATE"
@@ -99,13 +100,10 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
     platform_version    = "LATEST"
 
     network_configuration {
+      # Note in my testing this won't work without a security group and public IP
       subnets = data.terraform_remote_state.global_vpc.outputs.public_subnet_ids
       security_groups = [module.ecs_sg.this_security_group_id]
       assign_public_ip = true
     }
   }
-
-
-
-
 }
