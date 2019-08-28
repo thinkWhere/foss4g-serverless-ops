@@ -8,3 +8,8 @@ output "ecs_task_role" {
   value       = aws_iam_role.ecs_task_role.arn
 }
 
+output "ecs_events_role" {
+  description = "ARN of the ECS events role"
+  value       = aws_iam_role.ecs_events.arn
+}
+
