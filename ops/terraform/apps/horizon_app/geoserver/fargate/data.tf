@@ -4,7 +4,7 @@ data "terraform_remote_state" "global_geoserver_ecs" {
 
   config = {
     bucket                  = var.bucket
-    key                     = "apps/geoserver/global/terraform.tfstate"
+    key                     = "apps/horizon_app/geoserver/global/terraform.tfstate"
     region                  = var.region
     shared_credentials_file = "/root/.aws/credentials"
     profile                 = var.profile

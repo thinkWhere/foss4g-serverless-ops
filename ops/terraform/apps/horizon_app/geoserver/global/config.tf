@@ -9,7 +9,7 @@ provider "aws" {
 # Location of shared state in S3 for this module.  EDIT WITH EXTREME CAUTION!!
 terraform {
   backend "s3" {
-    key                     = "apps/geoserver/fargate/terraform.tfstate"
+    key                     = "apps/horizon_app/geoserver/global/terraform.tfstate"
     shared_credentials_file = "/root/.aws/credentials"
   }
 }
