@@ -6,7 +6,7 @@
 # Override defaults if desired
 REGION="us-east-1"
 PROFILE="foss4g_ops"
-BUCKET="foss4g-ops-tfstate"
+BUCKET="foss4g-ops-terraformstate"
 
 # Add utils into path
 export PATH=$PATH:`pwd`/utils

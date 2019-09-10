@@ -29,9 +29,12 @@ terraform apply
 
 ## TODO
 
+## TODO
+
 * First Run Config
     * Set up a Terraform Admin User
     * Setup an S3 bucket to hold Terraform State
+        * In our case ```foss4g-ops-terraformstate``` as mentioned in setenv.sh
     * Setup env_vars.ini
 * Docker-compose and setenv.sh
 * Explain Terraform, config, variables, etc
