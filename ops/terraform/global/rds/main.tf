@@ -15,7 +15,8 @@ module "postgres_apps_staging_sg" {
   description = "SG for postgres_apps_staging db"
   vpc_id      = data.terraform_remote_state.staging_vpc.outputs.vpc_id
 
-  ingress_cidr_blocks      = ["31.54.183.200/32", "194.75.207.229/32"]
+  # TODO to make this simple to demo we've allow all traffic to DB you NEVER WANT THIS IN PRODUCTION, LIMIT IP RANGE
+  ingress_cidr_blocks      = ["0.0.0.0/0"]
   ingress_rules            = ["postgresql-tcp" ]
 
   egress_rules      = ["all-all"]
