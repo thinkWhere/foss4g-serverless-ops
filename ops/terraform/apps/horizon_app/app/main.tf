@@ -1,10 +1,25 @@
+######
+# S3
+######
+
+resource "aws_s3_bucket" "horizon_app_bucket" {
+  # This bucket used by the horizon app to write redered images to
+  bucket = "horizon-viewer-test1"
+
+  tags = {
+    Owner       = "foss4g"
+    Name        = "horizon-app-test1"
+    Environment = "Production"
+  }
+}
+
 #########
 # ECR
 #########
 
-resource "aws_ecr_repository" "fargate_hello" {
-  # Create an Elastic Container Repo for the fargat_hello project
-  name = "fargate-hello"
+resource "aws_ecr_repository" "horizon_app_ecr" {
+  # Create an Elastic Container Repo for the horizon app project
+  name = "horizon-app"
 }
 
 
@@ -12,23 +27,23 @@ resource "aws_ecr_repository" "fargate_hello" {
 # ECS
 ##########
 
-resource "aws_ecs_cluster" "fargate_hello_cluster" {
+resource "aws_ecs_cluster" "horizon_app_cluster" {
   # Creates new ECS cluster
-  name = "fargate-hello-cluster"
+  name = "horizon-app-cluster"
 }
 
 #######################
 # Cloud Watch
 ######################
 
-resource "aws_cloudwatch_log_group" "fargate_hello_cloudwatch_logs" {
+resource "aws_cloudwatch_log_group" "horizon_app_cloudwatch_logs" {
   # Create log group for collection and analysis.  Logs that the container will generate will automatically
   # be pushed to this group
-  name = "fargate-hello-cluster"
+  name = "horizon-app-cluster"
   retention_in_days = 7
 
   tags = {
-    Application = "fargate-hello"
+    Application = "horizon-app"
   }
 }
 
@@ -37,22 +52,22 @@ resource "aws_cloudwatch_log_group" "fargate_hello_cloudwatch_logs" {
 # Fargate
 ######################
 
-resource "aws_ecs_task_definition" "fargate-hello-task" {
+resource "aws_ecs_task_definition" "horizon_app_task" {
   # Task definition describes docker container, logging etc
-  family                   = "fargate-hello"
+  family                   = "horizon-app"
 
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = 512
+  memory                   = 1024
   network_mode             = "awsvpc"  # allocates task a network interface
 
   execution_role_arn       = data.terraform_remote_state.iam_ecs.outputs.ecs_service_role
   task_role_arn            = data.terraform_remote_state.iam_ecs.outputs.ecs_task_role
 
-  container_definitions    = templatefile("task_definitions/fargate_hello.json",
+  container_definitions    = templatefile("task_definitions/horizon_app.json",
                                 { region = var.region
-                                  repo_url =  aws_ecr_repository.fargate_hello.repository_url
-                                  cloud_watch_group = aws_cloudwatch_log_group.fargate_hello_cloudwatch_logs.name})
+                                  repo_url =  aws_ecr_repository.horizon_app_ecr.repository_url
+                                  cloud_watch_group = aws_cloudwatch_log_group.horizon_app_cloudwatch_logs.name})
 }
 
 
@@ -65,8 +80,8 @@ module "ecs_sg" {
   source = "terraform-aws-modules/security-group/aws"
   version = "~> 3.0"
 
-  name        = "fargate-hello-ecs"
-  description = "SG for fargate hello"
+  name        = "horizon-app-ecs"
+  description = "SG for horizon app"
   vpc_id      = data.terraform_remote_state.global_vpc.outputs.vpc_id
 
   egress_rules         = ["all-all"]
@@ -80,7 +95,7 @@ module "ecs_sg" {
 
 resource "aws_cloudwatch_event_rule" "fargate_every_five_mins" {
   # Create a new rule that will schedule container every 5 mins
-  name                = "fargate-hello-five-mins"
+  name                = "horizon-app-five-mins"
   description         = "Run fargate every 5 mins"
   schedule_expression = "rate(5 minutes)"
 }
@@ -89,14 +104,14 @@ resource "aws_cloudwatch_event_target" "ecs_scheduled_task" {
   # Wire scheduler to ecs container
 
   target_id = "run-scheduled-task-every-hour"
-  arn       = aws_ecs_cluster.fargate_hello_cluster.arn
+  arn       = aws_ecs_cluster.horizon_app_cluster.arn
   rule      = aws_cloudwatch_event_rule.fargate_every_five_mins.name
   role_arn  = data.terraform_remote_state.iam_ecs.outputs.ecs_events_role
 
   ecs_target {
     launch_type         = "FARGATE"
     task_count          = 1
-    task_definition_arn = aws_ecs_task_definition.fargate-hello-task.arn
+    task_definition_arn = aws_ecs_task_definition.horizon_app_task.arn
     platform_version    = "LATEST"
 
     network_configuration {
