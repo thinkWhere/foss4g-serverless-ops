@@ -13,3 +13,7 @@ variable "profile" {
 variable "bucket" {
   description = "S3 bucket Terraform config is stored in, read from TF_VAR_bucket env var"
 }
+
+variable "horizon_app_bucket" {
+  description = "Name of the bucket the render app will ouput to"
+}
