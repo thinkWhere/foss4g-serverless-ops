@@ -37,7 +37,12 @@ printf "\nawscli default provider:    $TF_VAR_profile \n"
 # Database admin passwords
 DB_APPSSTAGING_PASS=`utils/parse_config.py $PROFILE db_appsstaging_pass`
 export TF_VAR_db_appsstaging_pass=$DB_APPSSTAGING_PASS
-printf "Terraform DB AppsStaging Pass   `echo $TF_VAR_db_appsstaging_pass | cut -c1-8`... \n\n"
+printf "Terraform DB AppsStaging Pass   `echo $TF_VAR_db_appsstaging_pass | cut -c1-8`... \n"
+
+# Horizon App Bucket
+HORIZON_APP_BUCKET=`utils/parse_config.py $PROFILE horizon_app_bucket`
+export TF_VAR_horizon_app_bucket=$HORIZON_APP_BUCKET
+printf "Terraform Horizon App Bucket   `echo $TF_VAR_horizon_app_bucket` \n\n"
 
 printf "#########################################################################\n"
 

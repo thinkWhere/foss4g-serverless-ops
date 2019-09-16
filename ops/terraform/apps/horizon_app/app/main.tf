@@ -4,11 +4,11 @@
 
 resource "aws_s3_bucket" "horizon_app_bucket" {
   # This bucket used by the horizon app to write redered images to
-  bucket = "horizon-viewer-test1"
+  bucket = var.horizon_app_bucket
 
   tags = {
     Owner       = "foss4g"
-    Name        = "horizon-app-test1"
+    Name        = var.horizon_app_bucket
     Environment = "Production"
   }
 }
@@ -57,8 +57,8 @@ resource "aws_ecs_task_definition" "horizon_app_task" {
   family                   = "horizon-app"
 
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 1024
+  memory                   = 2048
   network_mode             = "awsvpc"  # allocates task a network interface
 
   execution_role_arn       = data.terraform_remote_state.iam_ecs.outputs.ecs_service_role
