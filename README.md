@@ -13,31 +13,12 @@ cd ops
 . ./setenv.sh
 ```
 
-## Creating the AWS Serverless environment
-Terraform can be used to spin up the serverless environment by running the following commands:
-```bash
-# Create VPC
-cd /ops/terraform/global/vpc
-tfinit
-terraform apply
+## Creating a Serverless Environment
+This repo creates a serverless environment for 2 sample apps.  Instructions for working with the apps can be found in the project wiki, here:
 
-# Create RDS
-cd /ops/terraform/global/vpc
-tfinit
-terraform apply
-```
+https://github.com/thinkWhere/foss4g-serverless-ops/wiki
 
-## TODO
+## A note on Security
 
-## TODO
+Be aware that this repo creates an environment for demo purposes only.  Shortcuts have been taken to make apps easy to demo, in a production environment you will want to ensure you limit access to databases etc
 
-* First Run Config
-    * Set up a Terraform Admin User
-    * Setup an S3 bucket to hold Terraform State
-        * In our case ```foss4g-ops-terraformstate``` as mentioned in setenv.sh
-    * Setup env_vars.ini
-* Docker-compose and setenv.sh
-* Explain Terraform, config, variables, etc
-* Explain Terraform modules/registry
-* Create VPC
-* Create RDS
