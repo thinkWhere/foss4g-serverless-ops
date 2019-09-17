@@ -1,3 +1,13 @@
+locals {
+  ecs_service_role_name    = "EcsServiceRoleIE"
+  ecs_service_policy_name  = "ecs-service-policyIE"
+  ecs_task_role_name       = "ECSTaskRoleIE"
+  ecs_task_policy_name     = "ecs-task-policyIE"
+  ecs_events_role_name     = "ecs_eventsIE"
+  ecs_events_run_role_name = "ecs_events_run_task_with_any_roleIE"
+}
+
+
 #######################
 # IAM ECS Service Role
 #######################
@@ -7,7 +17,7 @@ resource "aws_iam_role" "ecs_service_role" {
   # account on your behalf, such as updating your load balancer with the
   # details of where your containers are, so that traffic can reach your
   # containers.
-  name = "EcsServiceRole"
+  name = local.ecs_service_role_name
   description = "Role which authorizes ECS to manage resources on our behalf"
   assume_role_policy = <<EOF
 {
@@ -31,7 +41,7 @@ EOF
 
 resource "aws_iam_policy" "ecs_service_policy" {
   # Note if permission problems, refer to the AmazonECS_FullAccess policy and add missing tasks
-  name        = "ecs-service-policy"
+  name        = local.ecs_service_policy_name
   description = "Permissions for ECS"
 
   policy = <<EOF
@@ -86,7 +96,7 @@ resource "aws_iam_role" "ecs_task_role" {
   # the containers that should be deployed togehter and the resources they
   # require from a compute/memory perspective. So, the policies below will define
   # the IAM permissions that our Flask-Bootstrap docker containers will have.
-  name = "ECSTaskRole"
+  name = local.ecs_task_role_name
   description = "Role which authorizes ECS to manage resources on our behalf"
   assume_role_policy = <<EOF
 {
@@ -109,7 +119,7 @@ EOF
 
 resource "aws_iam_policy" "ecs_task_policy" {
   # Note if permission problems, refer to the AmazonECS_FullAccess policy and add missing tasks
-  name        = "ecs-task-policy"
+  name        = local.ecs_task_policy_name
   description = "Permissions for ECS"
 
   policy = <<EOF
@@ -144,7 +154,7 @@ resource "aws_iam_role_policy_attachment" "attach-policy-to-task-role" {
 
 resource "aws_iam_role" "ecs_events" {
   # Create a role to allow us to execute a cloud watch scheduler
-  name = "ecs_events"
+  name = local.ecs_events_role_name
 
   assume_role_policy = <<DOC
 {

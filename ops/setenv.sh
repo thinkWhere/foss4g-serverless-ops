@@ -4,9 +4,9 @@
 # . ./setenv.sh
 
 # Override defaults if desired
-REGION="us-east-1"
+REGION="eu-west-1"
 PROFILE="foss4g_ops"
-BUCKET="foss4g-ops-terraformstate"
+BUCKET="foss4g-ops-terraformstate-ie"
 
 # Add utils into path
 export PATH=$PATH:`pwd`/utils
